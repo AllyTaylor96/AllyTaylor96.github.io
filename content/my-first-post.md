@@ -7,4 +7,6 @@ Slug: My-first-post
 Authors: Your name
 Summary: What does your post talk about? Write here.
 
-This is the *first post* from my Pelican blog. **YAY!**
+This is the *first post* from my Pelican blog. **If you can read this, the site has compiled and built correctly!**
+
+Coppy is a stinky man.
