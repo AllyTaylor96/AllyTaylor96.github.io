@@ -124,8 +124,31 @@
 
   <div>
     <h3>Introduction</h3>
-<p>This article will contain some detail on the project carried out in <a href="https://github.com/AllyTaylor96/toxicity-classifier">the linked Git repo</a>, where we build a classifier that differentiates between 'toxic' and 'non-toxic' comments.</p>
-<p>To be continued...</p>
+<p>The motivation behind this project was to fully complete a machine learning model build from scratch to make sure I have a nice, well-formatted example <em>somewhere</em> of my coding capabilities, and the ability to see through a project.
+Before beginning, my Github repo consisted entirely of half-finished or barely-started projects, or some code from my Masters dissertation project that makes me cringe when I look back at it.</p>
+<p>After watching a Youtube video, I was reading through the comments and noticed an incredibly rude message relating to the creator's accent.
+It had been widely downvoted (which may be part of how Youtube itself filters out toxic comments as it hadn't been surfaced to the top of the comment list), but it got me thinking about how there must be a way of automatically flagging toxic comments at time of writing based on the language used or sentiments expressed.</p>
+<p>This struck me as a good ML problem to look at: having a way to automatically flag text as toxic.
+Therefore, <a href="https://github.com/AllyTaylor96/toxicity-classifier">this linked Git repo</a> was created to work on a solution.</p>
+<h3>Data</h3>
+<p>I began with looking for an appropriate dataset.
+The problem could either be framed as a regression problem (ie. <em>how toxic is the comment?</em>) or as a classification problem (ie. <em>is the comment toxic?</em>).
+After some searching, a regression approach seemed unlikely as most publically available datasets didn't give ratings of toxicity.
+<a href="https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/overview">One notable dataset on Kaggle</a> gave 5 different areas (ie. toxic, obscene, threat, insult) a human-rated value, that models needed to try to predict.
+While this sounded interesting, I wanted the project repo to be something that someone could just run and it would download the dataset for them: the Kaggle repo requires log-in to Kaggle which adds some trickiness.</p>
+<p>Therefore, I instead settled on <a href="https://huggingface.co/datasets/OxAISH-AL-LLM/wiki_toxic">this dataset from HF Datasets</a> which uses the same core dataset (a selection of Wikipedia comments) that have been individually labelled as either toxic or non-toxic (framing the problem as a classification problem).
+That means that the model we eventually build is going to be estimating whether a comment is toxic or not.</p>
+<h3>Data Prep</h3>
+<p>To be written...</p>
+<h3>Model Structure</h3>
+<p>To be written...</p>
+<h3>Training</h3>
+<h4>Initial Training</h4>
+<p>To be written...</p>
+<h4>Further Training</h4>
+<p>Write about trying different techniques here, l2 reg, hyperparam tuning, changing model size...</p>
+<h3>Test Results</h3>
+<p>To be written...</p>
   </div>
   <div class="tag-cloud">
     <p>
