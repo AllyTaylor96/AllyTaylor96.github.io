@@ -180,8 +180,10 @@ Due to my prior positive experience with using them in a different project, <a h
 <p>The general steps I followed were:</p>
 <ul>
 <li>build a vocabulary dictionary from all text in the dataset ({word: idx})</li>
-<li>download FastText vectors and map between the vocabulary dictionary and the embeddings ({idx: embedding})</li>
+<li>download FastText vectors and map between the vocabulary dictionary and the embeddings ({idx: embedding})<ul>
 <li>if word in vocabulary dictionary but not in FastText pre-trained embeddings, create random embedding for it</li>
+</ul>
+</li>
 </ul>
 <p><center></p>
 <table>
