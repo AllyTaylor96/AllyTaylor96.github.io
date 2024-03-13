@@ -57,11 +57,20 @@ Due to my prior positive experience with using them in a different project, &lt;
 - build a vocabulary dictionary from all text in the dataset ({word: idx})
 - download FastText vectors and map between the vocabulary dictionary and the embeddings ({idx: embedding})
     - if word in vocabulary dictionary but not in FastText pre-trained embeddings, create random embedding for it&lt;/p&gt;
-&lt;p&gt;&lt;center&gt;
-| &lt;img alt="my_image" src="/img/toxicity_data_prep.drawio.png" title="Text-to-feature Pipeline"&gt; |
-|:--:|
-| &lt;em&gt;Text-to-feature Pipeline&lt;/em&gt; |
-&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="text-align: center;"&gt;&lt;img alt="my_image" src="/img/toxicity_data_prep.drawio.png" title="Text-to-feature Pipeline"&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center;"&gt;&lt;em&gt;Text-to-feature Pipeline&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;/center&gt;&lt;/p&gt;
 &lt;h3&gt;Model Structure&lt;/h3&gt;
 &lt;p&gt;To be written...&lt;/p&gt;
 &lt;h3&gt;Training&lt;/h3&gt;
