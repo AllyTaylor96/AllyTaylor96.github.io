@@ -19,13 +19,34 @@ That means that the model we eventually build is going to be estimating whether 
 &lt;p&gt;The dataset is imbalanced (which hopefully reflects the real distribution of toxicity on typical internet comments).
 It contains ~200k non-toxic comments and ~22.5k toxic comments, so a roughly 1:10 imbalance between the categories.
 The HF dataset contains a 'balanced' training set, which automatically splits the data distribution appropriately: the training data is split to be 50/50 toxic/non-toxic, while the validation and test set mirror the real distribution of data (~1:10).&lt;/p&gt;
-&lt;p&gt;&lt;center&gt;
-| &lt;strong&gt;Dataset Split&lt;/strong&gt;     | &lt;strong&gt;Non-Toxic Count&lt;/strong&gt;   | &lt;strong&gt;Toxic Count&lt;/strong&gt;   |
-|:-----------------:    |:-------------------:  |:---------------:  |
-|     &lt;em&gt;Training&lt;/em&gt;        |        12934          |      12934        |
-|    &lt;em&gt;Validation&lt;/em&gt;       |        28624          |       3291        |
-|       &lt;em&gt;Test&lt;/em&gt;          |        57735          |       6243        | 
-&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="text-align: center;"&gt;&lt;strong&gt;Dataset Split&lt;/strong&gt;&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;&lt;strong&gt;Non-Toxic Count&lt;/strong&gt;&lt;/th&gt;
+&lt;th style="text-align: center;"&gt;&lt;strong&gt;Toxic Count&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center;"&gt;&lt;em&gt;Training&lt;/em&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;12934&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;12934&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center;"&gt;&lt;em&gt;Validation&lt;/em&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;28624&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;3291&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center;"&gt;&lt;em&gt;Test&lt;/em&gt;&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;57735&lt;/td&gt;
+&lt;td style="text-align: center;"&gt;6243&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;/center&gt;&lt;/p&gt;
 &lt;p&gt;From inspection, the dataset seemed to contain several examples that were unusually long: while this wouldn't necessarily cause a huge problem, it may impact overall performance during training when comments are padded to the maximum size.
 Therefore, it was decided to have a hard limit on how long in words the sentences could be (250 by default).
 This hard limit only cuts ~4k comments from the overall count and sped up training significantly. &lt;/p&gt;

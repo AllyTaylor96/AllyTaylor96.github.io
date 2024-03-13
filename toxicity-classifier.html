@@ -143,13 +143,34 @@ That means that the model we eventually build is going to be estimating whether 
 <p>The dataset is imbalanced (which hopefully reflects the real distribution of toxicity on typical internet comments).
 It contains ~200k non-toxic comments and ~22.5k toxic comments, so a roughly 1:10 imbalance between the categories.
 The HF dataset contains a 'balanced' training set, which automatically splits the data distribution appropriately: the training data is split to be 50/50 toxic/non-toxic, while the validation and test set mirror the real distribution of data (~1:10).</p>
-<p><center>
-| <strong>Dataset Split</strong>     | <strong>Non-Toxic Count</strong>   | <strong>Toxic Count</strong>   |
-|:-----------------:    |:-------------------:  |:---------------:  |
-|     <em>Training</em>        |        12934          |      12934        |
-|    <em>Validation</em>       |        28624          |       3291        |
-|       <em>Test</em>          |        57735          |       6243        | 
-</center></p>
+<p><center></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Dataset Split</strong></th>
+<th style="text-align: center;"><strong>Non-Toxic Count</strong></th>
+<th style="text-align: center;"><strong>Toxic Count</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><em>Training</em></td>
+<td style="text-align: center;">12934</td>
+<td style="text-align: center;">12934</td>
+</tr>
+<tr>
+<td style="text-align: center;"><em>Validation</em></td>
+<td style="text-align: center;">28624</td>
+<td style="text-align: center;">3291</td>
+</tr>
+<tr>
+<td style="text-align: center;"><em>Test</em></td>
+<td style="text-align: center;">57735</td>
+<td style="text-align: center;">6243</td>
+</tr>
+</tbody>
+</table>
+<p></center></p>
 <p>From inspection, the dataset seemed to contain several examples that were unusually long: while this wouldn't necessarily cause a huge problem, it may impact overall performance during training when comments are padded to the maximum size.
 Therefore, it was decided to have a hard limit on how long in words the sentences could be (250 by default).
 This hard limit only cuts ~4k comments from the overall count and sped up training significantly. </p>
