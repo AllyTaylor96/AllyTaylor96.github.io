@@ -137,9 +137,34 @@ After some searching, a regression approach seemed unlikely as most publically a
 <a href="https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/overview">One notable dataset on Kaggle</a> gave 5 different areas (ie. toxic, obscene, threat, insult) a human-rated value, that models needed to try to predict.
 While this sounded interesting, I wanted the project repo to be something that someone could just run and it would download the dataset for them: the Kaggle repo requires log-in to Kaggle which adds some trickiness.</p>
 <p>Therefore, I instead settled on <a href="https://huggingface.co/datasets/OxAISH-AL-LLM/wiki_toxic">this dataset from HF Datasets</a> which uses the same core dataset (a selection of Wikipedia comments) that have been individually labelled as either toxic or non-toxic (framing the problem as a classification problem).
-That means that the model we eventually build is going to be estimating whether a comment is toxic or not.</p>
+That means that the model we eventually build is going to be estimating whether a comment is toxic or not, as opposed to giving a toxicity rating.</p>
 <h3>Data Prep</h3>
-<p>To be written...</p>
+<h4>Exploring our dataset</h4>
+<p>The dataset is imbalanced (which hopefully reflects the real distribution of toxicity on typical internet comments).
+It contains ~200k non-toxic comments and ~22.5k toxic comments, so a roughly 1:10 imbalance between the categories.
+The HF dataset contains a 'balanced' training set, which automatically splits the data distribution appropriately: the training data is split to be 50/50 toxic/non-toxic, while the validation and test set mirror the real distribution of data (~1:10).</p>
+<p><center>
+| <strong>Dataset Split</strong>     | <strong>Non-Toxic Count</strong>   | <strong>Toxic Count</strong>   |
+|:-----------------:    |:-------------------:  |:---------------:  |
+|     <em>Training</em>        |        12934          |      12934        |
+|    <em>Validation</em>       |        28624          |       3291        |
+|       <em>Test</em>          |        57735          |       6243        | 
+</center></p>
+<p>From inspection, the dataset seemed to contain several examples that were unusually long: while this wouldn't necessarily cause a huge problem, it may impact overall performance during training when comments are padded to the maximum size.
+Therefore, it was decided to have a hard limit on how long in words the sentences could be (250 by default).
+This hard limit only cuts ~4k comments from the overall count and sped up training significantly. </p>
+<h3>From raw text to features</h3>
+<p>A standard encoding pipeline was followed for the dataset to prepare it for our classifier.
+Due to my prior positive experience with using them in a different project, <a href="https://fasttext.cc/docs/en/crawl-vectors.html">FastText vectors</a> were used as our main word embedding source.</p>
+<p>The general steps I followed were:
+- build a vocabulary dictionary from all text in the dataset ({word: idx})
+- download FastText vectors and map between the vocabulary dictionary and the embeddings ({idx: embedding})
+    - if word in vocabulary dictionary but not in FastText pre-trained embeddings, create random embedding for it</p>
+<p><center>
+| <img alt="my_image" src="/img/toxicity_data_prep.drawio.png" title="Text-to-feature Pipeline"> |
+|:--:|
+| <em>Text-to-feature Pipeline</em> |
+</center></p>
 <h3>Model Structure</h3>
 <p>To be written...</p>
 <h3>Training</h3>
