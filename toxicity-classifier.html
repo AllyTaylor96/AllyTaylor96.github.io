@@ -179,11 +179,12 @@ This hard limit only cuts ~4k comments from the overall count and sped up traini
 Due to my prior positive experience with using them in a different project, <a href="https://fasttext.cc/docs/en/crawl-vectors.html">FastText vectors</a> were used as our main word embedding source.</p>
 <p>The general steps I followed were:</p>
 <ul>
-<li>build a vocabulary dictionary from all text in the dataset ({word: idx})</li>
-<li>download FastText vectors and map between the vocabulary dictionary and the embeddings ({idx: embedding})<ul>
-<li>if word in vocabulary dictionary but not in FastText pre-trained embeddings, create random embedding for it</li>
+<li>build a vocabulary dictionary from all text in the dataset <em>(word -&gt; idx)</em></li>
+<li>download FastText vectors and map between the vocabulary dictionary and the embeddings <em>(idx -&gt; embedding)</em><ul>
+<li>if no FastText pre-trained embedding for word, create random embedding for it</li>
 </ul>
 </li>
+<li>encode all sentences in the dataset using the <em>word2idx</em> -&gt; <em>idx2embedding</em> pipeline</li>
 </ul>
 <p><center></p>
 <table>
@@ -199,8 +200,45 @@ Due to my prior positive experience with using them in a different project, <a h
 </tbody>
 </table>
 <p></center></p>
+<p>This gives us our encoded sentences we can pass to the model in training as (<em>'label', 'embedding'</em>) pairs.
+Here, the embeddings have the size of [MaximumSentenceLength, EmbeddingSize], or [250, 300] if default settings used.
+In training, these are batched, so they would really have the size of [BatchSize, MaximumSentenceLength, EmbeddingSize] when passed to the model, or [50, 250, 300] by default.</p>
 <h3>Model Structure</h3>
-<p>To be written...</p>
+<p>It was decided to use a CNN architecture for our classifier, which is typically pretty good at things like spam detection or simpler classification tasks.
+They are best at at learning and capturing local patterns/trends in the input data.
+It is worth noting that they aren't great at long-range learning (ie. learning patterns in text that span over a large sequence of words) in the way that a RNN or a transformer architecture would be.</p>
+<p>From my intuition, this problem is well-suited for a CNN as:
+- toxic language is typically located in small bursts, which the CNN filters should be able to learn
+- the variable length of comments in the dataset isn't an issue, as the CNN architecture is robust to different sequence lengths 
+- most comments aren't that long, so there isn't really a need for more complex sequence processing</p>
+<p>It also has the benefit of being small and efficient to train, with less parameters than RNNs or certainly transformer architectures - this is useful as it makes it feasible for someone to download the repo and train the model themselves without needing a large amount of compute.</p>
+<p>I began with a small and simple 1D CNN architecture to begin with: the set-up code for that is highlighted below.</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="n">Simple_CNN</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="k">Module</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;&quot;&quot; Simple 1D CNN Classifier. &quot;&quot;&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"></span>
+<span class="w">                 </span><span class="n">pretrained_embedding</span><span class="o">=</span><span class="k">None</span><span class="p">,</span><span class="w"></span>
+<span class="w">                 </span><span class="n">filter_sizes</span><span class="o">=[</span><span class="n">3, 4, 5</span><span class="o">]</span><span class="p">,</span><span class="w"></span>
+<span class="w">                 </span><span class="n">num_filters</span><span class="o">=[</span><span class="n">100, 100, 100</span><span class="o">]</span><span class="p">,</span><span class="w"></span>
+<span class="w">                 </span><span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="w"></span>
+<span class="w">                 </span><span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">super</span><span class="p">(</span><span class="n">Simple_CNN</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span><span class="w"></span>
+<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">vocab_size</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">embed_dim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pretrained_embedding</span><span class="p">.</span><span class="n">shape</span><span class="w"></span>
+<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">embedding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nn</span><span class="p">.</span><span class="n">Embedding</span><span class="p">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">pretrained_embedding</span><span class="p">,</span><span class="w"></span>
+<span class="w">                                                      </span><span class="n">freeze</span><span class="o">=</span><span class="k">True</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">up</span><span class="w"> </span><span class="n">convolution</span><span class="w"> </span><span class="n">network</span><span class="w"></span>
+<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">conv1d_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nn</span><span class="p">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="o">[</span><span class="n"></span>
+<span class="n">            nn.Conv1d(in_channels=self.embed_dim,</span>
+<span class="n">                      out_channels=num_filters[i</span><span class="o">]</span><span class="p">,</span><span class="w"></span>
+<span class="w">                      </span><span class="n">kernel_size</span><span class="o">=</span><span class="n">filter_sizes</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">filter_sizes</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="err">]</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="n">connected</span><span class="w"> </span><span class="n">layer</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">dropout</span><span class="w"></span>
+<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">fc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nn</span><span class="p">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">num_filters</span><span class="p">),</span><span class="w"> </span><span class="n">num_classes</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">dropout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nn</span><span class="p">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">dropout</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
 <h3>Training</h3>
 <h4>Initial Training</h4>
 <p>To be written...</p>
