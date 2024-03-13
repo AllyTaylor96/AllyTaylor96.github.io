@@ -53,10 +53,12 @@ This hard limit only cuts ~4k comments from the overall count and sped up traini
 &lt;h3&gt;From raw text to features&lt;/h3&gt;
 &lt;p&gt;A standard encoding pipeline was followed for the dataset to prepare it for our classifier.
 Due to my prior positive experience with using them in a different project, &lt;a href="https://fasttext.cc/docs/en/crawl-vectors.html"&gt;FastText vectors&lt;/a&gt; were used as our main word embedding source.&lt;/p&gt;
-&lt;p&gt;The general steps I followed were:
-- build a vocabulary dictionary from all text in the dataset ({word: idx})
-- download FastText vectors and map between the vocabulary dictionary and the embeddings ({idx: embedding})
-    - if word in vocabulary dictionary but not in FastText pre-trained embeddings, create random embedding for it&lt;/p&gt;
+&lt;p&gt;The general steps I followed were:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;build a vocabulary dictionary from all text in the dataset ({word: idx})&lt;/li&gt;
+&lt;li&gt;download FastText vectors and map between the vocabulary dictionary and the embeddings ({idx: embedding})&lt;/li&gt;
+&lt;li&gt;if word in vocabulary dictionary but not in FastText pre-trained embeddings, create random embedding for it&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;&lt;center&gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
